@@ -23,6 +23,8 @@ static RCTBridge *bridge;
 
 RCT_EXPORT_MODULE();
 
+static GCDWebServer* _previousWebServer;
+
 
 - (void)initResponseReceivedFor:(GCDWebServer *)server forType:(NSString*)type {
     [server addDefaultHandlerForMethod:type
@@ -68,7 +70,16 @@ RCT_EXPORT_METHOD(start:(NSInteger) port
     NSMutableDictionary *_requestResponses = [[NSMutableDictionary alloc] init];
     
     dispatch_sync(dispatch_get_main_queue(), ^{
+        // Stop any previous stub web servers. This can happen if the developer presses
+        // R)eload on the metro bundler debug screen
+        if (_previousWebServer != nil) {
+            RCTLogInfo(@"Stopping previous server");
+            _webServer = _previousWebServer;
+            _previousWebServer = nil;
+            [self stop];
+        }
         _webServer = [[GCDWebServer alloc] init];
+        _previousWebServer = _webServer;
         
         [self initResponseReceivedFor:_webServer forType:@"POST"];
         [self initResponseReceivedFor:_webServer forType:@"PUT"];
@@ -87,6 +98,7 @@ RCT_EXPORT_METHOD(stop)
         [_webServer stop];
         [_webServer removeAllHandlers];
         _webServer = nil;
+        _previousWebServer = nil;
     }
 }
 
