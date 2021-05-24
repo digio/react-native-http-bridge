@@ -33,7 +33,13 @@ public class HttpServerModule extends ReactContextBaseJavaModule implements Life
     @ReactMethod
     public void start(int port, String serviceName) {
         Log.d(MODULE_NAME, "Initializing server...");
-        this.port = port;
+        // Stop any previous stub web servers. This can happen if the developer presses
+        // R)eload on the metro bundler debug screen
+        if (server != null) {
+            Log.d(MODULE_NAME, "Stopping previous server...");
+            stopServer();
+        }
+        HttpServerModule.port = port;
 
         startServer();
     }
