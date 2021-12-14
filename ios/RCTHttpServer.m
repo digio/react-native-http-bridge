@@ -27,6 +27,7 @@ static GCDWebServer* _previousWebServer;
 
 
 - (void)initResponseReceivedFor:(GCDWebServer *)server forType:(NSString*)type {
+    _completionBlocks = [[NSMutableDictionary alloc] init];
     [server addDefaultHandlerForMethod:type
                           requestClass:[GCDWebServerDataRequest class]
                      asyncProcessBlock:^(GCDWebServerRequest* request, GCDWebServerCompletionBlock completionBlock) {
@@ -35,7 +36,6 @@ static GCDWebServer* _previousWebServer;
         int r = arc4random_uniform(1000000);
         NSString *requestId = [NSString stringWithFormat:@"%lld:%d", milliseconds, r];
 
-        _completionBlocks = [[NSMutableDictionary alloc] init];
          @synchronized (self) {
              [_completionBlocks setObject:completionBlock forKey:requestId];
          }
