@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.Map;
@@ -73,6 +74,13 @@ public class Server extends NanoHTTPD {
         request.putString("type", method.name());
         request.putString("requestId", requestId);
         
+        WritableMap headers = new WritableNativeMap();
+        Map<String, String> sessionHeaders = session.getHeaders();
+        for (String key: sessionHeaders.keySet()) {
+            headers.putString(key, sessionHeaders.get(key));
+        }
+        request.putMap("headers", headers);
+
         Map<String, String> files = new HashMap<>();
         session.parseBody(files);
         if (files.size() > 0) {
