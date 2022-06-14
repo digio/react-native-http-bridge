@@ -47,17 +47,20 @@ static GCDWebServer* _previousWebServer;
                                                              body:@{@"requestId": requestId,
                                                                     @"postData": dataRequest.jsonObject,
                                                                     @"type": type,
+                                                                    @"headers": request.headers,
                                                                     @"url": request.URL.relativeString}];
             } else {
                 [self.bridge.eventDispatcher sendAppEventWithName:@"httpServerResponseReceived"
                                                              body:@{@"requestId": requestId,
                                                                     @"type": type,
+                                                                    @"headers": request.headers,
                                                                     @"url": request.URL.relativeString}];
             }
         } @catch (NSException *exception) {
             [self.bridge.eventDispatcher sendAppEventWithName:@"httpServerResponseReceived"
                                                          body:@{@"requestId": requestId,
                                                                 @"type": type,
+                                                                @"headers": request.headers,
                                                                 @"url": request.URL.relativeString}];
         }
     }];
