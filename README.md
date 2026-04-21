@@ -9,6 +9,8 @@ The library can be useful for handling requests with `application/json` content 
 
 Since 0.6.0 can handle millions of requests at the same time and also includes some very basic support for [React Native QT](https://github.com/status-im/react-native-desktop). 
 
+Since 0.6.2 supports PATCH requests.
+
 ## Install
 
 ```shell
